@@ -2,49 +2,29 @@
 <html>
 <head>
   <title>For You ❤️</title>
-
   <style>
-    .heart {
-  position: absolute;
-  font-size: 20px;
-  animation: float 6s linear infinite;
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-@keyframes float {
-  0% { transform: translateY(100vh); opacity: 1; }
-  100% { transform: translateY(-10vh); opacity: 0; }
-}
     body {
-  margin: 0;
-  height: 100vh;
-  background: #ffe6e6; /* light pink like before */
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  text-align: center;
+      margin: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #ffe6e6;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
 
-    h1 {
-      font-weight: 500;
-      margin-bottom: 10px;
-    }
-
-    p {
-      opacity: 0.8;
-      margin-bottom: 30px;
+    h1, h2, p {
+      text-align: center;
     }
 
     button {
-      font-size: 18px;
-      padding: 10px 22px;
-      margin: 8px;
+      font-size: 20px;
+      padding: 12px 25px;
+      margin: 10px;
       border: none;
-      border-radius: 20px;
+      border-radius: 10px;
       cursor: pointer;
     }
 
@@ -54,93 +34,108 @@
     }
 
     #no {
-      background: #444;
+      background: #888;
       color: white;
-      position: absolute;
+      position: absolute; /* will move after hover */
+      top: auto; /* start below YES */
+      left: 0;
     }
 
-    #msg {
-      margin-top: 15px;
-      font-size: 14px;
-      opacity: 0.7;
-      height: 20px;
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh); opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
     }
   </style>
 </head>
-
 <body>
 
-<h1>Hey RAINA ❤️</h1>
-<p>എനിക്ക് നിന്നെ ഇഷ്ടമാണ്<br>Will you be my Valentine?</p>
-<div id="msg"></div>
-<button id="yes">YES</button>
-<button id="no">NO😶</button>
+<h1>Hey <span style="color:#ff2e63;">RAINA</span> ❤️</h1>
+<p>I made this just to ask you one thing…</p>
+
+<h2>എനിക്ക് നിന്നെ ഇഷ്ടമാണ്
+  Will you be my Valentine? 🌹</h2>
+
+<button id="yes">YES 😍</button>
+<button id="no" style="position: static;">No 😶</button>
 
 <audio id="bg-music" loop>
   <source src="malare-cover.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-  function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = Math.random() * 20 + 15 + "px";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}
-
-setInterval(createHeart, 400);
   const yesBtn = document.getElementById("yes");
   const noBtn = document.getElementById("no");
-  const msg = document.getElementById("msg");
   const music = document.getElementById("bg-music");
 
-  // play music on first interaction
+  // YES button click with heart explosion
+  yesBtn.addEventListener("click", () => {
+    document.querySelector("p")?.remove();
+    document.querySelector("h2")?.remove();
+    yesBtn.remove();
+    noBtn.remove();
+
+    // Explosion of hearts
+    for (let i = 0; i < 50; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = window.innerWidth/2 + "px";
+      heart.style.top = window.innerHeight/2 + "px";
+      heart.style.fontSize = Math.random() * 25 + 15 + "px";
+      heart.style.transition = "transform 1.5s ease-out, opacity 1.5s ease-out";
+      document.body.appendChild(heart);
+
+      const x = (Math.random() - 0.5) * 500;
+      const y = (Math.random() - 0.5) * 500;
+      setTimeout(() => {
+        heart.style.transform = `translate(${x}px, ${y}px) rotate(${Math.random()*360}deg)`;
+        heart.style.opacity = 0;
+      }, 50);
+
+      setTimeout(() => heart.remove(), 1600);
+    }
+
+    // Fade-in message
+    const h1 = document.querySelector("h1");
+    h1.innerHTML = "❤️ You just made me the happiest person ❤️";
+    h1.style.opacity = 0;
+    h1.style.transition = "opacity 1.5s";
+    setTimeout(() => h1.style.opacity = 1, 100);
+  });
+
+  // NO button dodge after first hover
+  noBtn.addEventListener("mouseenter", () => {
+    noBtn.style.position = "absolute"; // now it can move freely
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  });
+
+  // Floating hearts
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 20 + 15 + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }
+  setInterval(createHeart, 400);
+
+  // Play music on first click anywhere
   document.body.addEventListener("click", () => {
     if (music.paused) music.play();
   }, { once: true });
-
-  // YES click
-  yesBtn.addEventListener("click", () => {
-  // remove buttons and message
-  yesBtn.remove();
-  noBtn.remove();
-  msg.innerText = "";
-
-  // update h1 & p text
-  const h1 = document.querySelector("h1");
-  const p = document.querySelector("p");
-  h1.innerText = "❤️ You just made my heart very happy ❤️";
-  p.innerText = "Thank you for being you";
-});
-const teases = [
-  "Nice try 😏",
-  "Ayyo, athu nadakkilla 😌",
-  "Wrong button 😜",
-  "Try again 😏",
-  "Almost… but no 😌",
-  "Hmm 👀 you sure about that?"
-];
-
-let teaseIndex = 0;
-
-noBtn.addEventListener("click", () => {
-  const x = (Math.random() - 0.5) * 200;
-  const y = (Math.random() - 0.5) * 120;
-
-  noBtn.addEventListener("mouseenter", () => {
-  // Move NO button randomly
-  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
-
-  // Cycle tease messages
-  msg.innerText = teases[teaseIndex];
-  teaseIndex = (teaseIndex + 1) % teases.length;
-});
 </script>
 
 </body>
