@@ -45,7 +45,7 @@
     #no {
       background: #444;
       color: white;
-      position: relative;
+      position: absolute;
     }
 
     #msg {
@@ -61,11 +61,9 @@
 
 <h1>Hey RAINA ❤️</h1>
 <p>എനിക്ക് നിന്നെ ഇഷ്ടമാണ്<br>Will you be my Valentine?</p>
-
-<button id="yes">YES</button>
-<button id="no">NO</button>
-
 <div id="msg"></div>
+<button id="yes">YES</button>
+<button id="no">NO😶</button>
 
 <audio id="bg-music" loop>
   <source src="malare-cover.mp3" type="audio/mpeg">
@@ -84,20 +82,41 @@
 
   // YES click
   yesBtn.addEventListener("click", () => {
-    document.body.innerHTML = `
-      <h1>❤️ You just made my heart very happy ❤️</h1>
-      <p>Thank you for being you</p>
-    `;
-  });
+  // remove buttons and message
+  yesBtn.remove();
+  noBtn.remove();
+  msg.innerText = "";
 
-  // NO jump + tease
-  noBtn.addEventListener("click", () => {
-    const x = (Math.random() - 0.5) * 200;
-    const y = (Math.random() - 0.5) * 120;
+  // update h1 & p text
+  const h1 = document.querySelector("h1");
+  const p = document.querySelector("p");
+  h1.innerText = "❤️ You just made my heart very happy ❤️";
+  p.innerText = "Thank you for being you";
+});
+const teases = [
+  "Nice try 😏",
+  "Ayyo, athu nadakkilla 😌",
+  "Wrong button 😜",
+  "Try again 😏",
+  "Almost… but no 😌",
+  "Hmm 👀 you sure about that?"
+];
 
-    noBtn.style.transform = `translate(${x}px, ${y}px)`;
-    msg.innerText = "Nice try 😌";
-  });
+let teaseIndex = 0;
+
+noBtn.addEventListener("click", () => {
+  const x = (Math.random() - 0.5) * 200;
+  const y = (Math.random() - 0.5) * 120;
+
+  noBtn.addEventListener("mouseenter", () => {
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+
+  msg.innerText = teases[teaseIndex];
+  teaseIndex = (teaseIndex + 1) % teases.length;
+});
 </script>
 
 </body>
